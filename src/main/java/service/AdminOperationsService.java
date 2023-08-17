@@ -8,7 +8,7 @@ import repository.UserRepository;
 
 import java.util.List;
 
-public class AdminOperationsService {
+public class AdminOperationsService implements AvailableOperations {
     public void setDailyAllowanceValue(double dailyAllowanceValue) {
         ReimbursementValues.setDailyAllowanceValue(dailyAllowanceValue);
     }
@@ -61,8 +61,8 @@ public class AdminOperationsService {
         return ClaimRepository.getClaimList();
     }
 
-    public void updateReimbursementClaim(ReimbursementClaim originalClaim, ReimbursementClaim modifiedClaim) {
-        ClaimRepository.updateClaim(originalClaim, modifiedClaim);
+    public void updateReimbursementClaim(long originalClaimId, ReimbursementClaim modifiedClaim) {
+        ClaimRepository.updateClaim(originalClaimId, modifiedClaim);
     }
 
     public void removeReimbursementClaim(ReimbursementClaim claim) {

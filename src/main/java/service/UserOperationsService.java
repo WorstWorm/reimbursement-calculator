@@ -6,9 +6,10 @@ import repository.ClaimRepository;
 
 import java.util.List;
 
-public class UserOperationsService {
+public class UserOperationsService implements AvailableOperations {
 
-    public void makeReimbursementClaim(ReimbursementClaim claim) {
+    public void makeReimbursementClaim(User user, ReimbursementClaim claim) {
+        claim.setUser(user);
         ClaimRepository.addClaim(claim);
     }
 
@@ -18,7 +19,8 @@ public class UserOperationsService {
 
     public void updateOwnReimbursementClaim(User user, ReimbursementClaim originalClaim, ReimbursementClaim modifiedClaim) {
         if(originalClaim.getUser().equals(user)) {
-            ClaimRepository.updateClaim(originalClaim, modifiedClaim);
+            modifiedClaim.setUser(user);
+            ClaimRepository.updateClaim(originalClaim.getClaimId(), modifiedClaim);
         }
     }
 

@@ -17,19 +17,41 @@ public class ClaimRepository {
     public static List<ReimbursementClaim> getClaimListByUser(User user) {
         List<ReimbursementClaim> claimsToBeReturned = new ArrayList<>();
         for(ReimbursementClaim c : claimList) {
-            if(c.getUser().equals(user)){
+            if(c.getUser().equals(user)) {
                 claimsToBeReturned.add(c);
             }
         }
         return claimsToBeReturned;
     }
 
+    public static ReimbursementClaim getClaimById(long claimId) {
+        for(ReimbursementClaim c : claimList) {
+            if(c.getClaimId() == claimId) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     public static void addClaim(ReimbursementClaim claim) {
         claimList.add(claim);
     }
 
-    public static void updateClaim(ReimbursementClaim originalClaim, ReimbursementClaim modifiedClaim) {
-        claimList.remove(originalClaim);
-        claimList.add(modifiedClaim);
+    public static void updateClaim(long idOfOrginalClaim, ReimbursementClaim modifiedClaim) {
+        for(ReimbursementClaim c : claimList) {
+            if(c.getClaimId()==idOfOrginalClaim) {
+                c.setReceiptList(modifiedClaim.getReceiptsList());
+                c.setConfirmedReimbursement(modifiedClaim.getConfirmedReimbursement());
+                c.setDrivenDistance(modifiedClaim.getDrivenDistance());
+            }
+        }
+    }
+
+    public static void deleteClaim(ReimbursementClaim claim) {
+        claimList.remove(claim);
+    }
+
+    public static void deleteAll() {
+        claimList.clear();
     }
 }
