@@ -2,8 +2,7 @@ package service;
 
 import config.ReimbursementValues;
 import entities.Receipt;
-import entities.ReimbursementClaim;
-import enums.ReceiptCategory;
+import entities.Claim;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
@@ -13,15 +12,15 @@ import java.util.Objects;
 
 public class CalculationService {
 
-    public static BigDecimal getDailyAllowanceSum(ReimbursementClaim reimbursementClaim) {
-        int amountOfDays = (int)reimbursementClaim.getTripDateFrom().until(reimbursementClaim.getTripDateTo(), ChronoUnit.DAYS) + 1;
-        amountOfDays = amountOfDays - reimbursementClaim.getDisabledDays().size();
+    public static BigDecimal getDailyAllowanceSum(Claim claim) {
+        int amountOfDays = (int) claim.getTripDateFrom().until(claim.getTripDateTo(), ChronoUnit.DAYS) + 1;
+        amountOfDays = amountOfDays - claim.getDisabledDays().size();
         return ReimbursementValues.getDailyAllowanceValue().multiply(BigDecimal.valueOf(amountOfDays));
 
     }
 
-    public static BigDecimal getMillageSum(ReimbursementClaim reimbursementClaim) {
-        BigDecimal mileageAllowenceSum = ReimbursementValues.getCarMileageValue().multiply(BigDecimal.valueOf(reimbursementClaim.getDrivenDistance()));
+    public static BigDecimal getMillageSum(Claim claim) {
+        BigDecimal mileageAllowenceSum = ReimbursementValues.getCarMileageValue().multiply(BigDecimal.valueOf(claim.getDrivenDistance()));
         if(!Objects.equals(ReimbursementValues.getMileageLimit(), BigDecimal.valueOf(-1.0))) {
             if (mileageAllowenceSum.compareTo(ReimbursementValues.getMileageLimit()) > 0) {
                 mileageAllowenceSum = ReimbursementValues.getMileageLimit();
@@ -30,14 +29,14 @@ public class CalculationService {
         return mileageAllowenceSum;
     }
 
-    public static BigDecimal getReceiptSum(ReimbursementClaim reimbursementClaim) {
+    public static BigDecimal getReceiptSum(Claim claim) {
 
         List<Receipt> taxiReceipts = new ArrayList<>();
         List<Receipt> hotelReceipts = new ArrayList<>();
         List<Receipt> ticketReceipts = new ArrayList<>();
         List<Receipt> otherReceipts = new ArrayList<>();
 
-        for(Receipt r : reimbursementClaim.getReceiptsList()) {
+        for(Receipt r : claim.getReceiptsList()) {
             switch (r.getReceiptCategory()) {
                 case TAXI:
                     taxiReceipts.add(r);
@@ -103,11 +102,11 @@ public class CalculationService {
         return sum;
     }
 
-    public static BigDecimal getExpectedTotal(ReimbursementClaim reimbursementClaim) {
+    public static BigDecimal getExpectedTotal(Claim claim) {
         BigDecimal sum = BigDecimal.valueOf(0.0);
-        sum = sum.add(getReceiptSum(reimbursementClaim));
-        sum = sum.add(getDailyAllowanceSum(reimbursementClaim));
-        sum = sum.add(getMillageSum(reimbursementClaim));
+        sum = sum.add(getReceiptSum(claim));
+        sum = sum.add(getDailyAllowanceSum(claim));
+        sum = sum.add(getMillageSum(claim));
         if(!Objects.equals(ReimbursementValues.getTotalReimbursementLimit(), BigDecimal.valueOf(-1.0))) {
             if (sum.compareTo(ReimbursementValues.getTotalReimbursementLimit()) > 0) {
                 sum = ReimbursementValues.getTotalReimbursementLimit();

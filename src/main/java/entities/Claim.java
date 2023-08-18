@@ -1,10 +1,12 @@
 package entities;
 
+import service.CalculationService;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-public class ReimbursementClaim {
+public class Claim {
 
     private static long claimIdCounter = 0;
     private long claimId;
@@ -17,16 +19,20 @@ public class ReimbursementClaim {
     private BigDecimal expectedReimbursement;
     private BigDecimal confirmedReimbursement;
 
-    public ReimbursementClaim(LocalDate tripDateFrom, LocalDate tripDateTo, List<LocalDate> disabledDays, List<Receipt> receiptList, Integer drivenDistance) {
+    public Claim() {
+    }
+
+    public Claim(LocalDate tripDateFrom, LocalDate tripDateTo, List<LocalDate> disabledDays, List<Receipt> receiptList, Integer drivenDistance) {
         this.claimId = ++claimIdCounter;
         this.tripDateFrom = tripDateFrom;
         this.tripDateTo = tripDateTo;
         this.disabledDays = disabledDays;
         this.receiptList = receiptList;
         this.drivenDistance = drivenDistance;
+        this.expectedReimbursement = CalculationService.getExpectedTotal(this);
     }
 
-    public ReimbursementClaim(User user, LocalDate tripDateFrom, LocalDate tripDateTo, List<LocalDate> disabledDays, List<Receipt> receiptList, Integer drivenDistance) {
+    public Claim(User user, LocalDate tripDateFrom, LocalDate tripDateTo, List<LocalDate> disabledDays, List<Receipt> receiptList, Integer drivenDistance) {
         this.claimId = ++claimIdCounter;
         this.user = user;
         this.tripDateFrom = tripDateFrom;
@@ -34,15 +40,17 @@ public class ReimbursementClaim {
         this.disabledDays = disabledDays;
         this.receiptList = receiptList;
         this.drivenDistance = drivenDistance;
+        this.expectedReimbursement = CalculationService.getExpectedTotal(this);
     }
 
-    public ReimbursementClaim(Long claimId, LocalDate tripDateFrom, LocalDate tripDateTo, List<LocalDate> disabledDays, List<Receipt> receiptList, Integer drivenDistance) {
+    public Claim(Long claimId, LocalDate tripDateFrom, LocalDate tripDateTo, List<LocalDate> disabledDays, List<Receipt> receiptList, Integer drivenDistance) {
         this.claimId = claimId;
         this.tripDateFrom = tripDateFrom;
         this.tripDateTo = tripDateTo;
         this.disabledDays = disabledDays;
         this.receiptList = receiptList;
         this.drivenDistance = drivenDistance;
+        this.expectedReimbursement = CalculationService.getExpectedTotal(this);
     }
 
     public long getClaimId() {
@@ -80,6 +88,10 @@ public class ReimbursementClaim {
         return confirmedReimbursement;
     }
 
+    public void setClaimId() {
+        this.claimId = ++claimIdCounter;
+    }
+
     public void setUser(User user) {
         this.user = user;
     }
@@ -96,6 +108,22 @@ public class ReimbursementClaim {
         this.drivenDistance = drivenDistance;
     }
 
+    public void setTripDateFrom(LocalDate tripDateFrom) {
+        this.tripDateFrom = tripDateFrom;
+    }
+
+    public void setTripDateTo(LocalDate tripDateTo) {
+        this.tripDateTo = tripDateTo;
+    }
+
+    public void setDisabledDays(List<LocalDate> disabledDays) {
+        this.disabledDays = disabledDays;
+    }
+
+    public void setExpectedReimbursement(BigDecimal expectedReimbursement) {
+        this.expectedReimbursement = expectedReimbursement;
+    }
+
     @Override
     public String toString() {
         return "ReimbursementClaim{" +
@@ -106,8 +134,6 @@ public class ReimbursementClaim {
                 ", disabledDays=" + disabledDays +
                 ", receiptList=" + receiptList +
                 ", drivenDistance=" + drivenDistance +
-                ", expectedReimbursement=" + expectedReimbursement +
-                ", confirmedReimbursement=" + confirmedReimbursement +
                 '}';
     }
 }

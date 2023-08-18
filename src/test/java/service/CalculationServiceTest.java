@@ -2,7 +2,7 @@ package service;
 
 import config.ReimbursementValues;
 import entities.Receipt;
-import entities.ReimbursementClaim;
+import entities.Claim;
 import entities.User;
 import enums.ReceiptCategory;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class CalculationServiceTest {
 
         int drivenDistance = 0;
 
-        ReimbursementClaim givenClaim = new ReimbursementClaim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
+        Claim givenClaim = new Claim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
 
         //WHEN
         BigDecimal expectedSum = BigDecimal.valueOf(5 * ReimbursementValues.getDailyAllowanceValue().doubleValue());
@@ -51,7 +51,7 @@ class CalculationServiceTest {
 
         List<Receipt> receiptList = Collections.emptyList();
 
-        ReimbursementClaim givenClaim = new ReimbursementClaim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
+        Claim givenClaim = new Claim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
 
         //WHEN
         BigDecimal expectedSum = ReimbursementValues.getCarMileageValue().multiply(BigDecimal.valueOf(drivenDistance));
@@ -75,7 +75,7 @@ class CalculationServiceTest {
 
         List<Receipt> receiptList = Collections.emptyList();
 
-        ReimbursementClaim givenClaim = new ReimbursementClaim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
+        Claim givenClaim = new Claim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
 
         //WHEN
         BigDecimal expectedSum = ReimbursementValues.getMileageLimit();
@@ -111,7 +111,7 @@ class CalculationServiceTest {
 
         int drivenDistance = 0;
 
-        ReimbursementClaim claim = new ReimbursementClaim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
+        Claim claim = new Claim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
 
         //WHEN
         BigDecimal expectedSum = BigDecimal.valueOf(0.0);
@@ -153,7 +153,7 @@ class CalculationServiceTest {
 
         int drivenDistance = 0;
 
-        ReimbursementClaim claim = new ReimbursementClaim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
+        Claim claim = new Claim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
 
         //WHEN
         BigDecimal expectedSum = BigDecimal.valueOf(0.0);
@@ -188,7 +188,7 @@ class CalculationServiceTest {
 
         int drivenDistance = 150;
 
-        ReimbursementClaim givenClaim = new ReimbursementClaim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
+        Claim givenClaim = new Claim(new User(), tripDateFrom, tripDateTo, disabledDays, receiptList, drivenDistance);
 
         //WHEN
         BigDecimal expectedSum = BigDecimal.valueOf(0.0);

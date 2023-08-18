@@ -1,7 +1,7 @@
 package service;
 
 import config.ReimbursementValues;
-import entities.ReimbursementClaim;
+import entities.Claim;
 import entities.User;
 import repository.ClaimRepository;
 import repository.UserRepository;
@@ -57,15 +57,15 @@ public class AdminOperationsService implements AvailableOperations {
         return UserRepository.getUserByLogin(login);
     }
 
-    public List<ReimbursementClaim> getAllClaims() {
+    public List<Claim> getAllClaims() {
         return ClaimRepository.getClaimList();
     }
 
-    public void updateReimbursementClaim(long originalClaimId, ReimbursementClaim modifiedClaim) {
+    public void updateReimbursementClaim(long originalClaimId, Claim modifiedClaim) {
         ClaimRepository.updateClaim(originalClaimId, modifiedClaim);
     }
 
-    public void removeReimbursementClaim(ReimbursementClaim claim) {
+    public void removeReimbursementClaim(Claim claim) {
         ClaimRepository.getClaimList().remove(claim);
     }
 }

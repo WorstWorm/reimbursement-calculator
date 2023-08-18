@@ -1,12 +1,10 @@
 package service;
 
 import entities.Receipt;
-import entities.ReimbursementClaim;
+import entities.Claim;
 import entities.User;
 import enums.ReceiptCategory;
 import enums.UserStatus;
-import jdk.jfr.Label;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import repository.ClaimRepository;
 
@@ -24,11 +22,11 @@ public class UserOperationsServiceTest {
         User user = new User("ExampleUser", "Some password", UserStatus.USER);
 
         //WHEN
-        ReimbursementClaim givenClaim = new ReimbursementClaim(LocalDate.now(), LocalDate.now().plusDays(1), new ArrayList<>(), new ArrayList<>(), 0);
+        Claim givenClaim = new Claim(LocalDate.now(), LocalDate.now().plusDays(1), new ArrayList<>(), new ArrayList<>(), 0);
         ((UserOperationsService)user.getAvailableOperations()).makeReimbursementClaim(user, givenClaim);
 
         long givenId = givenClaim.getClaimId();
-        ReimbursementClaim receivedClaim = ClaimRepository.getClaimById(givenId);
+        Claim receivedClaim = ClaimRepository.getClaimById(givenId);
 
         //THEN
         System.out.println("Expected claim of \"" + givenClaim.getUser().getLogin() + "\" with id " + givenClaim.getClaimId() + " - "
@@ -46,13 +44,13 @@ public class UserOperationsServiceTest {
         User anotherUser = new User("AnotherUser", "Some password", UserStatus.USER);
 
         //WHEN
-        ReimbursementClaim givenClaim1 = new ReimbursementClaim(LocalDate.now(), LocalDate.now().plusDays(1), new ArrayList<>(), new ArrayList<>(), 120);
+        Claim givenClaim1 = new Claim(LocalDate.now(), LocalDate.now().plusDays(1), new ArrayList<>(), new ArrayList<>(), 120);
         ((UserOperationsService)mainUser.getAvailableOperations()).makeReimbursementClaim(mainUser, givenClaim1);
 
-        ReimbursementClaim givenClaim2 = new ReimbursementClaim(LocalDate.now(), LocalDate.now().plusDays(3), new ArrayList<>(), new ArrayList<>(), 150);
+        Claim givenClaim2 = new Claim(LocalDate.now(), LocalDate.now().plusDays(3), new ArrayList<>(), new ArrayList<>(), 150);
         ((UserOperationsService)anotherUser.getAvailableOperations()).makeReimbursementClaim(anotherUser, givenClaim2);
 
-        ReimbursementClaim givenClaim3 = new ReimbursementClaim(LocalDate.now(), LocalDate.now().plusDays(2), new ArrayList<>(), new ArrayList<>(), 100);
+        Claim givenClaim3 = new Claim(LocalDate.now(), LocalDate.now().plusDays(2), new ArrayList<>(), new ArrayList<>(), 100);
         ((UserOperationsService)mainUser.getAvailableOperations()).makeReimbursementClaim(mainUser, givenClaim3);
 
         //THEN
@@ -75,7 +73,7 @@ public class UserOperationsServiceTest {
         //GIVEN
         User user = new User("ExampleUser", "Some password", UserStatus.USER);
 
-        ReimbursementClaim givenClaim = new ReimbursementClaim(LocalDate.now(), LocalDate.now().plusDays(1), new ArrayList<>(), new ArrayList<>(), 0);
+        Claim givenClaim = new Claim(LocalDate.now(), LocalDate.now().plusDays(1), new ArrayList<>(), new ArrayList<>(), 0);
         ((UserOperationsService)user.getAvailableOperations()).makeReimbursementClaim(user, givenClaim);
 
         long claimId = givenClaim.getClaimId();
@@ -87,11 +85,9 @@ public class UserOperationsServiceTest {
 
         LocalDate disabledDay = LocalDate.now();
 
-        ReimbursementClaim modifiedClaim = new ReimbursementClaim(givenClaim.getClaimId(), givenClaim.getTripDateFrom(), givenClaim.getTripDateTo(), givenClaim.getDisabledDays(), givenClaim.getReceiptsList(), 150);
+        Claim modifiedClaim = new Claim(givenClaim.getClaimId(), givenClaim.getTripDateFrom(), givenClaim.getTripDateTo(), givenClaim.getDisabledDays(), givenClaim.getReceiptsList(), 150);
         modifiedClaim.getDisabledDays().add(disabledDay);
         modifiedClaim.getReceiptsList().add(receipt);
-
-
 
         ((UserOperationsService)user.getAvailableOperations()).updateOwnReimbursementClaim(user, givenClaim, modifiedClaim);
 
@@ -115,7 +111,7 @@ public class UserOperationsServiceTest {
         User user = new User("ExampleUser", "Some password", UserStatus.USER);
 
         //WHEN
-        ReimbursementClaim givenClaim = new ReimbursementClaim(LocalDate.now(), LocalDate.now().plusDays(1), new ArrayList<>(), new ArrayList<>(), 0);
+        Claim givenClaim = new Claim(LocalDate.now(), LocalDate.now().plusDays(1), new ArrayList<>(), new ArrayList<>(), 0);
         ((UserOperationsService)user.getAvailableOperations()).makeReimbursementClaim(user, givenClaim);
 
         int receivedAmountOfClaimsBeforeErase = ClaimRepository.getClaimList().size();
