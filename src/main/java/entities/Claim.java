@@ -17,7 +17,6 @@ public class Claim {
     private List<Receipt> receiptList;
     private int drivenDistance;
     private BigDecimal expectedReimbursement;
-    private BigDecimal confirmedReimbursement;
 
     public Claim() {
     }
@@ -84,9 +83,6 @@ public class Claim {
         return expectedReimbursement;
     }
 
-    public BigDecimal getConfirmedReimbursement() {
-        return confirmedReimbursement;
-    }
 
     public void setClaimId() {
         this.claimId = ++claimIdCounter;
@@ -94,10 +90,6 @@ public class Claim {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public void setConfirmedReimbursement(BigDecimal confirmedReimbursement) {
-        this.confirmedReimbursement = confirmedReimbursement;
     }
 
     public void setReceiptList(List<Receipt> receiptList) {

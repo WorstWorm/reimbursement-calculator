@@ -3,10 +3,11 @@ package service;
 import entities.Receipt;
 import entities.Claim;
 import entities.User;
-import enums.ReceiptCategory;
+import entities.ReceiptCategory;
 import enums.UserStatus;
 import org.junit.jupiter.api.Test;
 import repository.ClaimRepository;
+import repository.ReceiptCategoryRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -81,7 +82,7 @@ public class UserOperationsServiceTest {
         String receivedClaimBeforeUpdate = ClaimRepository.getClaimById(claimId).toString();
 
         //WHEN
-        Receipt receipt = new Receipt(ReceiptCategory.HOTEL, BigDecimal.valueOf(100));
+        Receipt receipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("hotel"), BigDecimal.valueOf(100));
 
         LocalDate disabledDay = LocalDate.now();
 

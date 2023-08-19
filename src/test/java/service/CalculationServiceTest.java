@@ -1,13 +1,12 @@
 package service;
 
-import config.ReimbursementValues;
-import entities.Receipt;
+import repository.ReimbursementValues;
 import entities.Claim;
+import entities.Receipt;
+import entities.ReceiptCategory;
 import entities.User;
-import enums.ReceiptCategory;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import repository.ReceiptCategoryRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CalculationServiceTest {
 
@@ -93,16 +94,23 @@ class CalculationServiceTest {
     @Test
     void testGetReceiptSum() {
         //GIVEN
-        Receipt taxiReceipt1 = new Receipt(ReceiptCategory.TAXI, BigDecimal.valueOf(21.3));
-        Receipt taxiReceipt2 = new Receipt(ReceiptCategory.TAXI, BigDecimal.valueOf(18.7));
-        Receipt hotelReceipt = new Receipt(ReceiptCategory.HOTEL, BigDecimal.valueOf(100.0));
-        Receipt ticketReceipt = new Receipt(ReceiptCategory.TICKET, BigDecimal.valueOf(50.0));
-        Receipt otherReceipt = new Receipt(ReceiptCategory.OTHER, BigDecimal.valueOf(150.20));
+        ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("taxi", -1));
+        ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("hotel", -1));
+        ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("ticket", -1));
+        ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("other", -1));
+
+        Receipt taxiReceipt1 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), BigDecimal.valueOf(21.3));
+        Receipt taxiReceipt2 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), BigDecimal.valueOf(18.7));
+        Receipt hotelReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("hotel"), BigDecimal.valueOf(100.0));
+        Receipt ticketReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("ticket"), BigDecimal.valueOf(50.0));
+        Receipt otherReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("other"), BigDecimal.valueOf(150.20));
+
         List<Receipt> receiptList = Arrays.asList(taxiReceipt1, taxiReceipt2, hotelReceipt, ticketReceipt, otherReceipt);
-        BigDecimal temp = BigDecimal.valueOf(0.0);
-        for(Receipt r : receiptList){
-            temp = temp.add(r.getReceiptSum());
-        }
+
+//        BigDecimal temp = BigDecimal.valueOf(0.0);
+//        for(Receipt r : receiptList){
+//            temp = temp.add(r.getReceiptSum());
+//        }
 
         LocalDate tripDateFrom = LocalDate.now();
         LocalDate tripDateTo = tripDateFrom.plusDays(1);
@@ -125,21 +133,24 @@ class CalculationServiceTest {
         //THEN
         System.out.println("Expected: " + expectedSum + " - Received: " + receivedSum);
         assertEquals(expectedSum, receivedSum);
+
+        //CLEAN-UP
+        ReceiptCategoryRepository.getReceiptCategoryList().clear();
     }
 
     @Test
     void testGetReceiptSumWithLimits() {
         //GIVEN
-        ReimbursementValues.setTaxiReceiptLimit(30);
-        ReimbursementValues.setHotelReceiptLimit(80);
-        ReimbursementValues.setTicketReceiptLimit(40);
-        ReimbursementValues.setOtherReceiptLimit(100);
+        ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("taxi", 30));
+        ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("hotel", 80));
+        ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("ticket", 40));
+        ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("other", 100));
 
-        Receipt taxiReceipt1 = new Receipt(ReceiptCategory.TAXI, BigDecimal.valueOf(21.3));
-        Receipt taxiReceipt2 = new Receipt(ReceiptCategory.TAXI, BigDecimal.valueOf(18.7));
-        Receipt hotelReceipt = new Receipt(ReceiptCategory.HOTEL, BigDecimal.valueOf(100.0));
-        Receipt ticketReceipt = new Receipt(ReceiptCategory.TICKET, BigDecimal.valueOf(50.0));
-        Receipt otherReceipt = new Receipt(ReceiptCategory.OTHER, BigDecimal.valueOf(150.20));
+        Receipt taxiReceipt1 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), BigDecimal.valueOf(21.3));
+        Receipt taxiReceipt2 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), BigDecimal.valueOf(18.7));
+        Receipt hotelReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("hotel"), BigDecimal.valueOf(100.0));
+        Receipt ticketReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("ticket"), BigDecimal.valueOf(50.0));
+        Receipt otherReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("other"), BigDecimal.valueOf(150.20));
         List<Receipt> receiptList = Arrays.asList(taxiReceipt1, taxiReceipt2, hotelReceipt, ticketReceipt, otherReceipt);
         BigDecimal temp = BigDecimal.valueOf(0.0);
         for(Receipt r : receiptList){
@@ -157,10 +168,10 @@ class CalculationServiceTest {
 
         //WHEN
         BigDecimal expectedSum = BigDecimal.valueOf(0.0);
-        expectedSum = expectedSum.add(ReimbursementValues.getTaxiReceiptLimit());
-        expectedSum = expectedSum.add(ReimbursementValues.getHotelReceiptLimit());
-        expectedSum = expectedSum.add(ReimbursementValues.getTicketReceiptLimit());
-        expectedSum = expectedSum.add(ReimbursementValues.getOtherReceiptLimit());
+        expectedSum = expectedSum.add(ReceiptCategoryRepository.getReceiptCategory("taxi").getReceiptCategoryLimit());
+        expectedSum = expectedSum.add(ReceiptCategoryRepository.getReceiptCategory("hotel").getReceiptCategoryLimit());
+        expectedSum = expectedSum.add(ReceiptCategoryRepository.getReceiptCategory("ticket").getReceiptCategoryLimit());
+        expectedSum = expectedSum.add(ReceiptCategoryRepository.getReceiptCategory("other").getReceiptCategoryLimit());
         BigDecimal receivedSum = CalculationService.getReceiptSum(claim);
 
         //THEN
@@ -168,10 +179,7 @@ class CalculationServiceTest {
         assertEquals(expectedSum, receivedSum);
 
         //CLEANUP
-        ReimbursementValues.setTaxiReceiptLimit(-1);
-        ReimbursementValues.setHotelReceiptLimit(-1);
-        ReimbursementValues.setTicketReceiptLimit(-1);
-        ReimbursementValues.setOtherReceiptLimit(-1);
+        ReceiptCategoryRepository.getReceiptCategoryList().clear();
     }
 
     @Test
@@ -180,11 +188,14 @@ class CalculationServiceTest {
         LocalDate tripDateFrom = LocalDate.of(2023, 8, 1);
         LocalDate tripDateTo = LocalDate.of(2023, 8, 5);
         List<LocalDate> disabledDays = Collections.emptyList();
+        ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("taxi", -1));
+        ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("hotel", -1));
+        ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("ticket", -1));
 
         List<Receipt> receiptList = new ArrayList<>();
-        receiptList.add(new Receipt(ReceiptCategory.TAXI, BigDecimal.valueOf(20.0)));
-        receiptList.add(new Receipt(ReceiptCategory.HOTEL, BigDecimal.valueOf(100.0)));
-        receiptList.add(new Receipt(ReceiptCategory.TICKET, BigDecimal.valueOf(50.0)));
+        receiptList.add(new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), BigDecimal.valueOf(20.0)));
+        receiptList.add(new Receipt(ReceiptCategoryRepository.getReceiptCategory("hotel"), BigDecimal.valueOf(100.0)));
+        receiptList.add(new Receipt(ReceiptCategoryRepository.getReceiptCategory("ticket"), BigDecimal.valueOf(50.0)));
 
         int drivenDistance = 150;
 
@@ -201,5 +212,8 @@ class CalculationServiceTest {
         //THEN
         System.out.println("Expected: " + expectedSum + " - Received: " + receivedSum);
         assertEquals(expectedSum, receivedSum);
+
+        //CLEANUP
+        ReceiptCategoryRepository.getReceiptCategoryList().clear();
     }
 }

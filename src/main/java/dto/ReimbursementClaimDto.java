@@ -1,11 +1,9 @@
 package dto;
 
-import entities.Receipt;
 import entities.User;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 public class ReimbursementClaimDto {
     private long claimId;
@@ -16,9 +14,8 @@ public class ReimbursementClaimDto {
     private int receiptAmount;
     private int drivenDistance;
     private BigDecimal expectedReimbursement;
-    private BigDecimal confirmedReimbursement;
 
-    public ReimbursementClaimDto(long claimId, User user, LocalDate tripDateFrom, LocalDate tripDateTo, String disabledDays, int receiptAmount, int drivenDistance, BigDecimal expectedReimbursement, BigDecimal confirmedReimbursement) {
+    public ReimbursementClaimDto(long claimId, User user, LocalDate tripDateFrom, LocalDate tripDateTo, String disabledDays, int receiptAmount, int drivenDistance, BigDecimal expectedReimbursement) {
         this.claimId = claimId;
         this.user = user;
         this.tripDateFrom = tripDateFrom;
@@ -27,7 +24,6 @@ public class ReimbursementClaimDto {
         this.receiptAmount = receiptAmount;
         this.drivenDistance = drivenDistance;
         this.expectedReimbursement = expectedReimbursement;
-        this.confirmedReimbursement = confirmedReimbursement;
     }
 
     public long getClaimId() {
@@ -60,9 +56,5 @@ public class ReimbursementClaimDto {
 
     public BigDecimal getExpectedReimbursement() {
         return expectedReimbursement;
-    }
-
-    public BigDecimal getConfirmedReimbursement() {
-        return confirmedReimbursement;
     }
 }

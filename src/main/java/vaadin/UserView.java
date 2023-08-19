@@ -3,7 +3,7 @@ package vaadin;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.CheckboxGroup;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
@@ -12,12 +12,15 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import dto.DisabledDateDto;
 import dto.ReimbursementClaimDto;
 import entities.Claim;
 import entities.Receipt;
-import enums.ReceiptCategory;
+import entities.ReceiptCategory;
+import mapper.DateMapper;
 import mapper.ReimbursementClaimMapper;
 import repository.ActiveUserInfo;
+import repository.ReceiptCategoryRepository;
 import service.UserOperationsService;
 
 import java.math.BigDecimal;
@@ -27,55 +30,59 @@ import java.util.List;
 
 @Route("userView")
 public class UserView extends VerticalLayout {
-
-    ReimbursementClaimMapper reimbursementClaimMapper = new ReimbursementClaimMapper();
-
-    TextField infoLabel1;
-    TextField infoLabel2;
-    TextField valueOfReceiptTextField;
-    TextField carMillageTextField;
-    Button logout;
-    Button createReimbursementButton;
-    Button confirmReimbursementButton;
-    Button addReceiptButton;
-    ComboBox<ReceiptCategory> receiptCategoryComboBox;
-    DatePicker dateFromPicker;
-    DatePicker dateToPicker;
-    Grid<ReimbursementClaimDto> claimGrid;
-    Grid<Receipt> receiptGrid;
-    HorizontalLayout userInfo;
-    HorizontalLayout claimButtonsToolbar;
-    HorizontalLayout tripDatesToolbar;
-    HorizontalLayout receiptsToolbar;
-    Claim selectedClaim;
-    List<Receipt> receiptListForSelectedClaim = new ArrayList<>();
+    private final ReimbursementClaimMapper reimbursementClaimMapper = new ReimbursementClaimMapper();
+    private final DateMapper dateMapper = new DateMapper();
+    private TextField usernameField;
+    private TextField userStatusField;
+    private TextField spaceHolder;
+    private TextField valueOfReceiptTextField;
+    private TextField carMillageTextField;
+    private Button logoutButton;
+    private Button createReimbursementButton;
+    private Button confirmReimbursementButton;
+    private Button addDisabledDayButton;
+    private Button addReceiptButton;
+    private ComboBox<ReceiptCategory> receiptCategoryComboBox;
+    private DatePicker dateFromPicker;
+    private DatePicker dateToPicker;
+    private DatePicker disabledDayPicker;
+    private Grid<ReimbursementClaimDto> claimGrid;
+    private Grid<DisabledDateDto> disabledDaysGrid;
+    private Grid<Receipt> receiptGrid;
+    private HorizontalLayout userInfoToolbar;
+    private HorizontalLayout claimButtonsToolbar;
+    private HorizontalLayout tripDatesToolbar;
+    private HorizontalLayout receiptsAndMileageToolbar;
+    private Claim selectedClaim;
+    private List<LocalDate> disabledDaysList = new ArrayList<>();
+    private List<Receipt> receiptListForSelectedClaim = new ArrayList<>();
 
     private void createUserInfoToolbar() {
-        userInfo = new HorizontalLayout();
+        userInfoToolbar = new HorizontalLayout();
 
-        infoLabel1 = new TextField();
-        infoLabel1.setLabel("username");
-        infoLabel1.setValue(ActiveUserInfo.getUser().getLogin());
+        usernameField = new TextField();
+        usernameField.setLabel("username");
+        usernameField.setValue(ActiveUserInfo.getUser().getLogin());
 
-        infoLabel2 = new TextField();
-        infoLabel2.setLabel("status");
-        infoLabel2.setValue(ActiveUserInfo.getUser().getStatus().toString());
+        userStatusField = new TextField();
+        userStatusField.setLabel("status");
+        userStatusField.setValue(ActiveUserInfo.getUser().getStatus().toString());
 
-        logout = new Button("log out");
-        logout.addClickListener(eventClicked -> {
+        logoutButton = new Button("log out");
+        logoutButton.addClickListener(eventClicked -> {
             ActiveUserInfo.setUser(null);
             UI.getCurrent().navigate(MainView.class);
         });
 
-        userInfo.add(infoLabel1, infoLabel2, logout);
-        add(userInfo);
+        userInfoToolbar.add(usernameField, userStatusField, logoutButton);
+        add(userInfoToolbar);
     }
 
     private void createClaimGrid() {
         claimGrid = new Grid<>(ReimbursementClaimDto.class);
         refreshClaimGrid();
         claimGrid.removeColumnByKey("user");
-        claimGrid.setHeight(300, Unit.PIXELS);
+        claimGrid.setHeight(180, Unit.PIXELS);
         add(claimGrid);
     }
 
@@ -88,11 +95,12 @@ public class UserView extends VerticalLayout {
         });
 
         confirmReimbursementButton = new Button("confirm reimbursement");
+        confirmReimbursementButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         confirmReimbursementButton.setEnabled(false);
         confirmReimbursementButton.addClickListener(clickEvent -> {
             selectedClaim.setTripDateFrom(dateFromPicker.getValue());
             selectedClaim.setTripDateTo(dateToPicker.getValue());
-            selectedClaim.setDisabledDays(new ArrayList<>());
+            selectedClaim.setDisabledDays(disabledDaysList);
             selectedClaim.setReceiptList(receiptListForSelectedClaim);
             selectedClaim.setDrivenDistance(Integer.parseInt(carMillageTextField.getValue()));
             ((UserOperationsService)ActiveUserInfo.getUser().getAvailableOperations()).makeReimbursementClaim(ActiveUserInfo.getUser(), selectedClaim);
@@ -104,28 +112,48 @@ public class UserView extends VerticalLayout {
         add(claimButtonsToolbar);
     }
 
+    private void createDisabledDaysGrid() {
+        disabledDaysGrid = new Grid<>(DisabledDateDto.class);
+        disabledDaysGrid.setHeight(180, Unit.PIXELS);
+        refreshDisabledDaysGrid();
+        add(disabledDaysGrid);
+    }
+
     private void createTripDatesToolbar() {
         tripDatesToolbar = new HorizontalLayout();
+
         dateFromPicker = new DatePicker("start of trip");
         dateFromPicker.setEnabled(false);
+
         dateToPicker = new DatePicker("end of trip");
         dateToPicker.setEnabled(false);
-        tripDatesToolbar.add(dateFromPicker, dateToPicker);
+
+        disabledDayPicker = new DatePicker("day to be disabled");
+
+        addDisabledDayButton = new Button("add disabled day");
+        addDisabledDayButton.setEnabled(false);
+        addDisabledDayButton.addClickListener(clickEvent -> {
+            disabledDaysList.add(disabledDayPicker.getValue());
+            refreshDisabledDaysGrid();
+        });
+
+        tripDatesToolbar.add(dateFromPicker, dateToPicker, disabledDayPicker, addDisabledDayButton);
         add(tripDatesToolbar);
     }
 
     private void createReceiptGrid() {
         receiptGrid = new Grid<>(Receipt.class);
-        receiptGrid.setHeight(200, Unit.PIXELS);
+        receiptGrid.setHeight(180, Unit.PIXELS);
         refreshReceiptGrid();
         add(receiptGrid);
     }
 
     private void createReceiptsToolbar() {
-        receiptsToolbar = new HorizontalLayout();
+        receiptsAndMileageToolbar = new HorizontalLayout();
 
         receiptCategoryComboBox = new ComboBox<>("receipt type");
-        receiptCategoryComboBox.setItems(ReceiptCategory.values());
+        receiptCategoryComboBox.setItems(ReceiptCategoryRepository.getReceiptCategoryList());
+        receiptCategoryComboBox.setItemLabelGenerator(category -> category.getCategoryName());
         receiptCategoryComboBox.setEnabled(false);
         valueOfReceiptTextField = new TextField("receipt value");
         valueOfReceiptTextField.setEnabled(false);
@@ -133,11 +161,16 @@ public class UserView extends VerticalLayout {
         addReceiptButton = new Button("add receipt");
         addReceiptButton.setEnabled(false);
         addReceiptButton.addClickListener(clickEvent -> {
-            receiptListForSelectedClaim.add(new Receipt(receiptCategoryComboBox.getValue(), new BigDecimal(valueOfReceiptTextField.getValue())));
+            receiptListForSelectedClaim.add(new Receipt(receiptCategoryComboBox.getValue(), BigDecimal.valueOf(Long.parseLong(valueOfReceiptTextField.getValue()))));
             refreshReceiptGrid();
         });
-        receiptsToolbar.add(receiptCategoryComboBox, valueOfReceiptTextField, addReceiptButton);
-        add(receiptsToolbar);
+        spaceHolder = new TextField();
+        spaceHolder.setWidth(100, Unit.PIXELS);
+        spaceHolder.setVisible(false);
+
+        carMillageTextField = new TextField("car millage");
+        receiptsAndMileageToolbar.add(receiptCategoryComboBox, valueOfReceiptTextField, addReceiptButton, spaceHolder, carMillageTextField);
+        add(receiptsAndMileageToolbar);
     }
 
     private void claimSelectedUnlock() {
@@ -148,6 +181,8 @@ public class UserView extends VerticalLayout {
         receiptCategoryComboBox.setEnabled(true);
         dateFromPicker.setEnabled(true);
         dateToPicker.setEnabled(true);
+        disabledDaysGrid.setEnabled(true);
+        addDisabledDayButton.setEnabled(true);
     }
 
     private void claimSelectedPrepare(Claim claim) {
@@ -170,13 +205,21 @@ public class UserView extends VerticalLayout {
         receiptCategoryComboBox.setEnabled(false);
         dateFromPicker.setEnabled(false);
         dateToPicker.setEnabled(false);
+        disabledDayPicker.setEnabled(false);
+        addDisabledDayButton.setEnabled(false);
         selectedClaim = null;
+        disabledDaysList = new ArrayList<>();
+        refreshDisabledDaysGrid();
         receiptListForSelectedClaim = new ArrayList<>();
         refreshReceiptGrid();
     }
 
     private void refreshReceiptGrid() {
         receiptGrid.setItems(receiptListForSelectedClaim);
+    }
+
+    private void refreshDisabledDaysGrid() {
+        disabledDaysGrid.setItems(dateMapper.mapToDateDtoList(disabledDaysList));
     }
 
     private void refreshClaimGrid() {
@@ -189,11 +232,10 @@ public class UserView extends VerticalLayout {
             createUserInfoToolbar();
             createClaimGrid();
             createClaimButtonsToolbar();
+            createDisabledDaysGrid();
             createTripDatesToolbar();
             createReceiptGrid();
             createReceiptsToolbar();
-            carMillageTextField = new TextField("car millage");
-            add(carMillageTextField);
         } else {
             this.setAlignItems(Alignment.CENTER);
             TextArea area = new TextArea();

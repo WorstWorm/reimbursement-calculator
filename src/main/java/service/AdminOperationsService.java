@@ -1,9 +1,11 @@
 package service;
 
-import config.ReimbursementValues;
+import repository.ReimbursementValues;
 import entities.Claim;
+import entities.ReceiptCategory;
 import entities.User;
 import repository.ClaimRepository;
+import repository.ReceiptCategoryRepository;
 import repository.UserRepository;
 
 import java.util.List;
@@ -25,21 +27,21 @@ public class AdminOperationsService implements AvailableOperations {
         ReimbursementValues.setMileageLimit(mileageLimit);
     }
 
-    public void setTaxiReceiptLimit(double taxiReceiptLimit) {
-        ReimbursementValues.setTaxiReceiptLimit(taxiReceiptLimit);
+    public void setReceiptCategory(ReceiptCategory newReceiptCategory) {
+        for(ReceiptCategory existingReceiptCategories : ReceiptCategoryRepository.getReceiptCategoryList()) {
+            if(existingReceiptCategories.getCategoryName().equals(newReceiptCategory.getCategoryName())) {
+                ReceiptCategoryRepository.removeReceiptCategory(existingReceiptCategories);
+                break;
+            }
+        }
+        ReceiptCategoryRepository.addReceiptCategory(newReceiptCategory);
     }
 
-    public void setHotelReceiptLimit(double hotelReceiptLimit) {
-        ReimbursementValues.setHotelReceiptLimit(hotelReceiptLimit);
+    public void removeReceiptCategory(ReceiptCategory receiptCategoryToDelete) {
+        ReceiptCategoryRepository.removeReceiptCategory(receiptCategoryToDelete);
     }
 
-    public void setTicketReceiptLimit(double ticketReceiptLimit) {
-        ReimbursementValues.setTicketReceiptLimit(ticketReceiptLimit);
-    }
-
-    public void setOtherReceiptLimit(double otherReceiptLimit) {
-        ReimbursementValues.setOtherReceiptLimit(otherReceiptLimit);
-    }
+    /* METHODS WHICH WERE NOT INTRODUCED TO UI YET
 
     public List<User> getAllUsers() {
         return UserRepository.getUserList();
@@ -68,4 +70,6 @@ public class AdminOperationsService implements AvailableOperations {
     public void removeReimbursementClaim(Claim claim) {
         ClaimRepository.getClaimList().remove(claim);
     }
+
+     */
 }

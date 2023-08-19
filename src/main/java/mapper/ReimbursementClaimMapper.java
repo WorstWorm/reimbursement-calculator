@@ -21,8 +21,7 @@ public class ReimbursementClaimMapper {
                 disabledDays,
                 claim.getReceiptsList().size(),
                 claim.getDrivenDistance(),
-                claim.getExpectedReimbursement(),
-                claim.getConfirmedReimbursement()
+                claim.getExpectedReimbursement()
         );
     }
 

@@ -1,7 +1,5 @@
 package entities;
 
-import enums.ReceiptCategory;
-
 import java.math.BigDecimal;
 
 public class Receipt {

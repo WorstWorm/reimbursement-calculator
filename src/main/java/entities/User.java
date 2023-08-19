@@ -9,9 +9,7 @@ public class User {
     private String login;
     private String password;
     private UserStatus status;
-
     private AvailableOperations availableOperations;
-
     public User() {
     }
 

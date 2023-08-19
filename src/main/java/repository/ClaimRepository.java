@@ -41,7 +41,6 @@ public class ClaimRepository {
         for(Claim c : claimList) {
             if(c.getClaimId()==idOfOrginalClaim) {
                 c.setReceiptList(modifiedClaim.getReceiptsList());
-                c.setConfirmedReimbursement(modifiedClaim.getConfirmedReimbursement());
                 c.setDrivenDistance(modifiedClaim.getDrivenDistance());
             }
         }

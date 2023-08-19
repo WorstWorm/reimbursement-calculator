@@ -2,10 +2,11 @@ package vaadin;
 
 import entities.Receipt;
 import entities.Claim;
+import entities.ReceiptCategory;
 import entities.User;
-import enums.ReceiptCategory;
 import enums.UserStatus;
 import repository.ClaimRepository;
+import repository.ReceiptCategoryRepository;
 import repository.UserRepository;
 
 import java.math.BigDecimal;
@@ -19,12 +20,17 @@ public class BasicData {
         //example data
         if(firstRun) {
 
+            ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("taxi", BigDecimal.valueOf(-1)));
+            ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("hotel", BigDecimal.valueOf(-1)));
+            ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("ticket", BigDecimal.valueOf(-1)));
+            ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("other", BigDecimal.valueOf(-1)));
+
             UserRepository.addUser(new User("userLogin", "userPassword", UserStatus.USER));
             UserRepository.addUser(new User("anotherUser", "somePassword", UserStatus.USER));
             UserRepository.addUser(new User("adminLogin", "adminPassword", UserStatus.ADMIN));
 
             ArrayList<Receipt> receipts = new ArrayList<>();
-            receipts.add(new Receipt(ReceiptCategory.HOTEL, BigDecimal.valueOf(400)));
+            receipts.add(new Receipt(ReceiptCategoryRepository.getReceiptCategory("hotel"), BigDecimal.valueOf(400)));
             ClaimRepository.addClaim(new Claim(UserRepository.getUserByLogin("userLogin"),
                     LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 5),
                     new ArrayList<>(), receipts, 200));
