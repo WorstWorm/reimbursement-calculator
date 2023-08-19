@@ -17,7 +17,7 @@ import repository.UserRepository;
 public class MainView extends VerticalLayout {
 
     public MainView() {
-        BasicData.generateData();
+        StartData.generateData();
         this.setAlignItems(Alignment.CENTER);
         this.setSizeFull();
 

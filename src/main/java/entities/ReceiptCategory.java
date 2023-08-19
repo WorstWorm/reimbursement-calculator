@@ -6,11 +6,6 @@ public class ReceiptCategory {
     private String categoryName;
     private BigDecimal receiptCategoryLimit;
 
-    public ReceiptCategory(String categoryName, BigDecimal receiptCategoryLimit) {
-        this.categoryName = categoryName;
-        this.receiptCategoryLimit = receiptCategoryLimit;
-    }
-
     public ReceiptCategory(String categoryName, double receiptCategoryLimit) {
         this.categoryName = categoryName;
         this.receiptCategoryLimit = BigDecimal.valueOf(receiptCategoryLimit);

@@ -42,6 +42,8 @@ public class User {
         return availableOperations;
     }
 
+    /* METHODS WHICH WERE NOT INTRODUCED TO UI YET ============================================
+
     public void setLogin(String login) {
         this.login = login;
     }
@@ -60,4 +62,6 @@ public class User {
             this.availableOperations = null;
         }
     }
+
+     ======================================================================================== */
 }

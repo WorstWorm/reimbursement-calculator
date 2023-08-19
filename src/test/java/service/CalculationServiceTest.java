@@ -99,18 +99,13 @@ class CalculationServiceTest {
         ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("ticket", -1));
         ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("other", -1));
 
-        Receipt taxiReceipt1 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), BigDecimal.valueOf(21.3));
-        Receipt taxiReceipt2 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), BigDecimal.valueOf(18.7));
-        Receipt hotelReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("hotel"), BigDecimal.valueOf(100.0));
-        Receipt ticketReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("ticket"), BigDecimal.valueOf(50.0));
-        Receipt otherReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("other"), BigDecimal.valueOf(150.20));
+        Receipt taxiReceipt1 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), 21.3);
+        Receipt taxiReceipt2 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), 18.7);
+        Receipt hotelReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("hotel"), 100.0);
+        Receipt ticketReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("ticket"), 50.0);
+        Receipt otherReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("other"), 150.20);
 
         List<Receipt> receiptList = Arrays.asList(taxiReceipt1, taxiReceipt2, hotelReceipt, ticketReceipt, otherReceipt);
-
-//        BigDecimal temp = BigDecimal.valueOf(0.0);
-//        for(Receipt r : receiptList){
-//            temp = temp.add(r.getReceiptSum());
-//        }
 
         LocalDate tripDateFrom = LocalDate.now();
         LocalDate tripDateTo = tripDateFrom.plusDays(1);
@@ -146,11 +141,11 @@ class CalculationServiceTest {
         ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("ticket", 40));
         ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("other", 100));
 
-        Receipt taxiReceipt1 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), BigDecimal.valueOf(21.3));
-        Receipt taxiReceipt2 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), BigDecimal.valueOf(18.7));
-        Receipt hotelReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("hotel"), BigDecimal.valueOf(100.0));
-        Receipt ticketReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("ticket"), BigDecimal.valueOf(50.0));
-        Receipt otherReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("other"), BigDecimal.valueOf(150.20));
+        Receipt taxiReceipt1 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), 21.3);
+        Receipt taxiReceipt2 = new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), 18.7);
+        Receipt hotelReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("hotel"), 100.0);
+        Receipt ticketReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("ticket"), 50.0);
+        Receipt otherReceipt = new Receipt(ReceiptCategoryRepository.getReceiptCategory("other"), 150.20);
         List<Receipt> receiptList = Arrays.asList(taxiReceipt1, taxiReceipt2, hotelReceipt, ticketReceipt, otherReceipt);
         BigDecimal temp = BigDecimal.valueOf(0.0);
         for(Receipt r : receiptList){
@@ -188,14 +183,15 @@ class CalculationServiceTest {
         LocalDate tripDateFrom = LocalDate.of(2023, 8, 1);
         LocalDate tripDateTo = LocalDate.of(2023, 8, 5);
         List<LocalDate> disabledDays = Collections.emptyList();
+
         ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("taxi", -1));
         ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("hotel", -1));
         ReceiptCategoryRepository.addReceiptCategory(new ReceiptCategory("ticket", -1));
 
         List<Receipt> receiptList = new ArrayList<>();
-        receiptList.add(new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), BigDecimal.valueOf(20.0)));
-        receiptList.add(new Receipt(ReceiptCategoryRepository.getReceiptCategory("hotel"), BigDecimal.valueOf(100.0)));
-        receiptList.add(new Receipt(ReceiptCategoryRepository.getReceiptCategory("ticket"), BigDecimal.valueOf(50.0)));
+        receiptList.add(new Receipt(ReceiptCategoryRepository.getReceiptCategory("taxi"), 20.0));
+        receiptList.add(new Receipt(ReceiptCategoryRepository.getReceiptCategory("hotel"), 100.0));
+        receiptList.add(new Receipt(ReceiptCategoryRepository.getReceiptCategory("ticket"), 50.0));
 
         int drivenDistance = 150;
 

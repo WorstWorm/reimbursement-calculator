@@ -37,6 +37,12 @@ public class ClaimRepository {
         claimList.add(claim);
     }
 
+    public static void deleteAll() {
+        claimList.clear();
+    }
+
+/* METHODS WHICH WERE NOT INTRODUCED TO UI YET ============================================
+
     public static void updateClaim(long idOfOrginalClaim, Claim modifiedClaim) {
         for(Claim c : claimList) {
             if(c.getClaimId()==idOfOrginalClaim) {
@@ -50,7 +56,5 @@ public class ClaimRepository {
         claimList.remove(claim);
     }
 
-    public static void deleteAll() {
-        claimList.clear();
-    }
+ ======================================================================================== */
 }

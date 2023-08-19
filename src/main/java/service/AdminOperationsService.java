@@ -1,16 +1,15 @@
 package service;
 
-import repository.ReimbursementValues;
 import entities.Claim;
 import entities.ReceiptCategory;
 import entities.User;
-import repository.ClaimRepository;
 import repository.ReceiptCategoryRepository;
-import repository.UserRepository;
+import repository.ReimbursementValues;
 
 import java.util.List;
 
 public class AdminOperationsService implements AvailableOperations {
+
     public void setDailyAllowanceValue(double dailyAllowanceValue) {
         ReimbursementValues.setDailyAllowanceValue(dailyAllowanceValue);
     }
@@ -41,7 +40,23 @@ public class AdminOperationsService implements AvailableOperations {
         ReceiptCategoryRepository.removeReceiptCategory(receiptCategoryToDelete);
     }
 
-    /* METHODS WHICH WERE NOT INTRODUCED TO UI YET
+
+    /* EMPTY IMPLEMENTATIONS OF OPERATIONS USED FOR USER ONLY */
+
+    @Override
+    public void makeReimbursementClaim(User user, Claim claim) {
+    }
+
+    @Override
+    public List<Claim> getOwnClaims(User user) {
+        return null;
+    }
+
+    /* ======================================================== */
+
+
+
+    /* METHODS WHICH WERE NOT INTRODUCED TO UI YET ============================================
 
     public List<User> getAllUsers() {
         return UserRepository.getUserList();
@@ -71,5 +86,5 @@ public class AdminOperationsService implements AvailableOperations {
         ClaimRepository.getClaimList().remove(claim);
     }
 
-     */
+     ======================================================================================== */
 }

@@ -42,19 +42,10 @@ public class Claim {
         this.expectedReimbursement = CalculationService.getExpectedTotal(this);
     }
 
-    public Claim(Long claimId, LocalDate tripDateFrom, LocalDate tripDateTo, List<LocalDate> disabledDays, List<Receipt> receiptList, Integer drivenDistance) {
-        this.claimId = claimId;
-        this.tripDateFrom = tripDateFrom;
-        this.tripDateTo = tripDateTo;
-        this.disabledDays = disabledDays;
-        this.receiptList = receiptList;
-        this.drivenDistance = drivenDistance;
-        this.expectedReimbursement = CalculationService.getExpectedTotal(this);
-    }
-
     public long getClaimId() {
         return claimId;
     }
+
     public User getUser() {
         return user;
     }
@@ -82,7 +73,6 @@ public class Claim {
     public BigDecimal getExpectedReimbursement() {
         return expectedReimbursement;
     }
-
 
     public void setClaimId() {
         this.claimId = ++claimIdCounter;

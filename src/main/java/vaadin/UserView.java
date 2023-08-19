@@ -21,9 +21,7 @@ import mapper.DateMapper;
 import mapper.ReimbursementClaimMapper;
 import repository.ActiveUserInfo;
 import repository.ReceiptCategoryRepository;
-import service.UserOperationsService;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +101,7 @@ public class UserView extends VerticalLayout {
             selectedClaim.setDisabledDays(disabledDaysList);
             selectedClaim.setReceiptList(receiptListForSelectedClaim);
             selectedClaim.setDrivenDistance(Integer.parseInt(carMillageTextField.getValue()));
-            ((UserOperationsService)ActiveUserInfo.getUser().getAvailableOperations()).makeReimbursementClaim(ActiveUserInfo.getUser(), selectedClaim);
+            ActiveUserInfo.getUser().getAvailableOperations().makeReimbursementClaim(ActiveUserInfo.getUser(), selectedClaim);
             refreshClaimGrid();
             unselectClaimLocks();
         });
@@ -129,6 +127,7 @@ public class UserView extends VerticalLayout {
         dateToPicker.setEnabled(false);
 
         disabledDayPicker = new DatePicker("day to be disabled");
+        disabledDayPicker.setEnabled(false);
 
         addDisabledDayButton = new Button("add disabled day");
         addDisabledDayButton.setEnabled(false);
@@ -143,6 +142,7 @@ public class UserView extends VerticalLayout {
 
     private void createReceiptGrid() {
         receiptGrid = new Grid<>(Receipt.class);
+        receiptGrid.removeColumnByKey("receiptCategory");
         receiptGrid.setHeight(180, Unit.PIXELS);
         refreshReceiptGrid();
         add(receiptGrid);
@@ -153,7 +153,7 @@ public class UserView extends VerticalLayout {
 
         receiptCategoryComboBox = new ComboBox<>("receipt type");
         receiptCategoryComboBox.setItems(ReceiptCategoryRepository.getReceiptCategoryList());
-        receiptCategoryComboBox.setItemLabelGenerator(category -> category.getCategoryName());
+        receiptCategoryComboBox.setItemLabelGenerator(ReceiptCategory::getCategoryName);
         receiptCategoryComboBox.setEnabled(false);
         valueOfReceiptTextField = new TextField("receipt value");
         valueOfReceiptTextField.setEnabled(false);
@@ -161,7 +161,7 @@ public class UserView extends VerticalLayout {
         addReceiptButton = new Button("add receipt");
         addReceiptButton.setEnabled(false);
         addReceiptButton.addClickListener(clickEvent -> {
-            receiptListForSelectedClaim.add(new Receipt(receiptCategoryComboBox.getValue(), BigDecimal.valueOf(Long.parseLong(valueOfReceiptTextField.getValue()))));
+            receiptListForSelectedClaim.add(new Receipt(receiptCategoryComboBox.getValue(), Long.parseLong(valueOfReceiptTextField.getValue())));
             refreshReceiptGrid();
         });
         spaceHolder = new TextField();
@@ -169,6 +169,7 @@ public class UserView extends VerticalLayout {
         spaceHolder.setVisible(false);
 
         carMillageTextField = new TextField("car millage");
+        carMillageTextField.setEnabled(false);
         receiptsAndMileageToolbar.add(receiptCategoryComboBox, valueOfReceiptTextField, addReceiptButton, spaceHolder, carMillageTextField);
         add(receiptsAndMileageToolbar);
     }
@@ -181,7 +182,7 @@ public class UserView extends VerticalLayout {
         receiptCategoryComboBox.setEnabled(true);
         dateFromPicker.setEnabled(true);
         dateToPicker.setEnabled(true);
-        disabledDaysGrid.setEnabled(true);
+        disabledDayPicker.setEnabled(true);
         addDisabledDayButton.setEnabled(true);
     }
 
@@ -223,7 +224,7 @@ public class UserView extends VerticalLayout {
     }
 
     private void refreshClaimGrid() {
-        claimGrid.setItems(reimbursementClaimMapper.mapToClaimDtoList(((UserOperationsService)ActiveUserInfo.getUser().getAvailableOperations()).getOwnClaims(ActiveUserInfo.getUser())));
+        claimGrid.setItems(reimbursementClaimMapper.mapToClaimDtoList(ActiveUserInfo.getUser().getAvailableOperations().getOwnClaims(ActiveUserInfo.getUser())));
     }
 
     public UserView() {

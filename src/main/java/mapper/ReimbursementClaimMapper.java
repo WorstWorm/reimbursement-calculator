@@ -8,11 +8,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReimbursementClaimMapper {
+
     public ReimbursementClaimDto mapToClaimDto(Claim claim) {
+
         String disabledDays = "";
+
         for(LocalDate date : claim.getDisabledDays()) {
             disabledDays += date + "; ";
         }
+
         return new ReimbursementClaimDto(
                 claim.getClaimId(),
                 claim.getUser(),

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ReceiptCategoryRepository {
 
-    private static List<ReceiptCategory> categoryList = new ArrayList<>();
+    private static final List<ReceiptCategory> categoryList = new ArrayList<>();
 
     public static List<ReceiptCategory> getReceiptCategoryList() {
         return categoryList;

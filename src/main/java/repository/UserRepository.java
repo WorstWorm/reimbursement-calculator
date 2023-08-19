@@ -8,10 +8,6 @@ import java.util.List;
 public class UserRepository {
     private static final List<User> userList = new ArrayList<>();
 
-    public static List<User> getUserList() {
-        return userList;
-    }
-
     public static User getUserByLogin(String login) {
         for(User u : userList) {
             if(u.getLogin().equals(login)) {
@@ -25,6 +21,12 @@ public class UserRepository {
         userList.add(user);
     }
 
+/* METHODS WHICH WERE NOT INTRODUCED TO UI YET ============================================
+
+    public static List<User> getUserList() {
+        return userList;
+    }
+
     public static void updateUserPassword(User user, String password) {
         for(User u : userList) {
             if(u.equals(user)){
@@ -32,4 +34,5 @@ public class UserRepository {
             }
         }
     }
+ ======================================================================================== */
 }

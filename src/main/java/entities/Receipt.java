@@ -4,15 +4,21 @@ import java.math.BigDecimal;
 
 public class Receipt {
     private final ReceiptCategory receiptCategory;
+    private final String receiptType;
     private final BigDecimal receiptSum;
 
-    public Receipt(ReceiptCategory receiptCategory, BigDecimal receiptSum) {
+    public Receipt(ReceiptCategory receiptCategory, double receiptSum) {
         this.receiptCategory = receiptCategory;
-        this.receiptSum = receiptSum;
+        this.receiptType = receiptCategory.getCategoryName();
+        this.receiptSum = BigDecimal.valueOf(receiptSum);
     }
 
     public ReceiptCategory getReceiptCategory() {
         return receiptCategory;
+    }
+
+    public String getReceiptType() {
+        return receiptType;
     }
 
     public BigDecimal getReceiptSum() {

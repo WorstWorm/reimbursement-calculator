@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 public class DateMapper {
     public DisabledDateDto mapToDateDto(LocalDate localDate) {
+
         return new DisabledDateDto(
                 localDate.getYear(),
                 localDate.getMonthValue(),

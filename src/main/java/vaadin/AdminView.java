@@ -10,11 +10,10 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
-import repository.ReimbursementValues;
 import entities.ReceiptCategory;
 import repository.ActiveUserInfo;
 import repository.ReceiptCategoryRepository;
-import service.AdminOperationsService;
+import repository.ReimbursementValues;
 
 @Route("adminView")
 public class AdminView extends VerticalLayout {
@@ -71,7 +70,7 @@ public class AdminView extends VerticalLayout {
 
         confirmDailyAllowanceButton = new Button("confirm");
         confirmDailyAllowanceButton.addClickListener(clickEvent -> {
-            ((AdminOperationsService)ActiveUserInfo.getUser().getAvailableOperations()).setDailyAllowanceValue(Double.parseDouble(dailyAllowanceValueField.getValue()));
+            ActiveUserInfo.getUser().getAvailableOperations().setDailyAllowanceValue(Double.parseDouble(dailyAllowanceValueField.getValue()));
             Notification notification = new Notification("daily allowance changed", 5000);
             notification.open();
         });
@@ -81,8 +80,8 @@ public class AdminView extends VerticalLayout {
 
         totalReimbursementLimitButton = new Button("confirm");
         totalReimbursementLimitButton.addClickListener(clickEvent -> {
-            ((AdminOperationsService)ActiveUserInfo.getUser().getAvailableOperations()).setTotalReimbursementLimit(Double.parseDouble(totalReimbursementLimitField.getValue()));
-            Notification notification = new Notification("total reimursement limit changed", 5000);
+            ActiveUserInfo.getUser().getAvailableOperations().setTotalReimbursementLimit(Double.parseDouble(totalReimbursementLimitField.getValue()));
+            Notification notification = new Notification("total reimbursement limit changed", 5000);
             notification.open();
         });
 
@@ -98,7 +97,7 @@ public class AdminView extends VerticalLayout {
 
         confirmCarMileageValueButton = new Button("confirm");
         confirmCarMileageValueButton.addClickListener(clickEvent -> {
-            ((AdminOperationsService)ActiveUserInfo.getUser().getAvailableOperations()).setCarMileageValue(Double.parseDouble(mileageValueField.getValue()));
+            (ActiveUserInfo.getUser().getAvailableOperations()).setCarMileageValue(Double.parseDouble(mileageValueField.getValue()));
             Notification notification = new Notification("car mileage changed", 5000);
             notification.open();
         });
@@ -108,7 +107,7 @@ public class AdminView extends VerticalLayout {
 
         mileageLimitButton = new Button("confirm");
         mileageLimitButton.addClickListener(clickEvent -> {
-            ((AdminOperationsService)ActiveUserInfo.getUser().getAvailableOperations()).setMileageLimit(Double.parseDouble(mileageLimitField.getValue()));
+            ActiveUserInfo.getUser().getAvailableOperations().setMileageLimit(Double.parseDouble(mileageLimitField.getValue()));
             Notification notification = new Notification("mileage limit changed", 5000);
             notification.open();
         });
@@ -137,9 +136,7 @@ public class AdminView extends VerticalLayout {
         receiptCategoryToolbar = new HorizontalLayout();
 
         addNewReceiptCategoryButton = new Button("add new receipt category");
-        addNewReceiptCategoryButton.addClickListener(clickEvent -> {
-            select();
-        });
+        addNewReceiptCategoryButton.addClickListener(clickEvent -> select());
 
         categoryNameField = new TextField("category name");
         categoryNameField.setEnabled(false);
@@ -151,7 +148,7 @@ public class AdminView extends VerticalLayout {
         confirmCategoryModificationButton.setEnabled(false);
         confirmCategoryModificationButton.addClickListener(clickEvent -> {
             ReceiptCategory category = new ReceiptCategory(categoryNameField.getValue(), categoryLimitField.getValue());
-            ((AdminOperationsService)(ActiveUserInfo.getUser().getAvailableOperations())).setReceiptCategory(category);
+            ActiveUserInfo.getUser().getAvailableOperations().setReceiptCategory(category);
             unselect();
             refreshCategoryGrid();
         });
@@ -160,7 +157,7 @@ public class AdminView extends VerticalLayout {
         removeCategoryButton.setEnabled(false);
         removeCategoryButton.addClickListener(clickEvent -> {
            if(selectedCategory!=null) {
-               ((AdminOperationsService)(ActiveUserInfo.getUser().getAvailableOperations())).removeReceiptCategory(selectedCategory);
+               ActiveUserInfo.getUser().getAvailableOperations().removeReceiptCategory(selectedCategory);
            }
            unselect();
            refreshCategoryGrid();

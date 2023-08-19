@@ -1,6 +1,7 @@
 package service;
 
 import entities.Claim;
+import entities.ReceiptCategory;
 import entities.User;
 import repository.ClaimRepository;
 
@@ -19,6 +20,44 @@ public class UserOperationsService implements AvailableOperations {
         return ClaimRepository.getClaimListByUser(user);
     }
 
+
+    /* EMPTY IMPLEMENTATIONS OF OPERATIONS USED BY ADMINISTRATOR ONLY  */
+
+    @Override
+    public void setDailyAllowanceValue(double dailyAllowanceValue) {
+
+    }
+
+    @Override
+    public void setCarMileageValue(double carMileageValue) {
+
+    }
+
+    @Override
+    public void setTotalReimbursementLimit(double totalReimbursementLimit) {
+
+    }
+
+    @Override
+    public void setMileageLimit(double mileageLimit) {
+
+    }
+
+    @Override
+    public void setReceiptCategory(ReceiptCategory newReceiptCategory) {
+
+    }
+
+    @Override
+    public void removeReceiptCategory(ReceiptCategory receiptCategoryToDelete) {
+
+    }
+
+    /* ==============================================================  */
+
+
+    /* METHODS WHICH WERE NOT INTRODUCED TO UI YET ============================================
+
     public void updateOwnReimbursementClaim(User user, Claim originalClaim, Claim modifiedClaim) {
         if(originalClaim.getUser().equals(user)) {
             modifiedClaim.setUser(user);
@@ -31,4 +70,6 @@ public class UserOperationsService implements AvailableOperations {
             ClaimRepository.getClaimList().remove(claim);
         }
     }
+
+    ======================================================================================== */
 }
